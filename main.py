@@ -5,8 +5,8 @@ import pyarrow.parquet as pq
 app = FastAPI()
 
 df_developer = pq.read_table("endpoint_developer.parquet").to_pandas()
-df_genre_games = pq.read_table("datasets/Parquet/endpoint_userforgenre_games.parquet").to_pandas()
-df_genre_items = pq.read_table("datasets/Parquet/endpoint_userforgenre_items.parquet").to_pandas()
+df_genre_games = pq.read_table("endpoint_userforgenre_games.parquet").to_pandas()
+df_genre_items = pq.read_table("endpoint_userforgenre_items.parquet").to_pandas()
 df_merged = pq.read_table("endpoint_bestdeveloperyear.parquet").to_pandas()
 df_review_analysis = pq.read_table("endpoint_developerreviewanalysis.parquet").to_pandas()
 
