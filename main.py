@@ -1,14 +1,15 @@
 from fastapi import FastAPI
 import pandas as pd
+import pyarrow.parquet as pq
 
 app = FastAPI()
 
-df_developer = pd.read_parquet("endpoint_developer.parquet")
-prices = pd.read_parquet("endpoint_userdata_prices.parquet")
-reviews = pd.read_parquet("endpoint_userdata_reviews.parquet")
-df_genre_years = pd.read_parquet("endpoint_userforgenre.parquet")
-df_merged = pd.read_parquet("endpoint_bestdeveloperyear.parquet")
-df_review_analysis = pd.read_parquet("endpoint_developerreviewanalysis.parquet")
+df_developer = pq.read_table("endpoint_developer.parquet").to_pandas()
+prices = pq.read_table("endpoint_userdata_prices.parquet").to_pandas()
+reviews = pq.read_table("endpoint_userdata_reviews.parquet").to_pandas()
+df_genre_years = pq.read_table("endpoint_userforgenre.parquet").to_pandas()
+df_merged = pq.read_table("endpoint_bestdeveloperyear.parquet").to_pandas()
+df_review_analysis = pq.read_table("endpoint_developerreviewanalysis.parquet").to_pandas()
 
 def developer(developer_name, df=df_developer):
     # Convertir el nombre del desarrollador a minúsculas para una comparación sin distinción entre mayúsculas y minúsculas
