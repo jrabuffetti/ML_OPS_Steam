@@ -5,8 +5,8 @@ import pyarrow.parquet as pq
 app = FastAPI()
 
 df_developer = pq.read_table("endpoint_developer.parquet").to_pandas()
-df_genre_games = pq.read_table("endpoint_userforgenre_games.parquet").to_pandas()
-df_genre_items = pq.read_table("endpoint_userforgenre_items.parquet").to_pandas()
+df_games = pq.read_table("endpoint_userforgenre_games.parquet").to_pandas()
+df_items = pq.read_table("endpoint_userforgenre_items.parquet").to_pandas()
 df_merged = pq.read_table("endpoint_bestdeveloperyear.parquet").to_pandas()
 df_review_analysis = pq.read_table("endpoint_developerreviewanalysis.parquet").to_pandas()
 
@@ -36,62 +36,6 @@ def developer(developer_name, df=df_developer):
 @app.get("/developer_info/{developer_name}")
 async def get_developer_info(developer_name: str):
     return developer(developer_name)
-
-def userdata(user_id, user_game_prices=prices, df_reviews=reviews):
-    """
-    Esta función calcula la cantidad de dinero gastado por un usuario en juegos, el porcentaje de recomendación
-    y la cantidad de items que ha adquirido.
-
-    Parámetros:
-    user_id (str): El identificador único del usuario del que se desean obtener los datos.
-    user_game_prices (DataFrame): DataFrame que contiene los precios de los juegos para el usuario.
-    df_reviews (DataFrame): DataFrame que contiene las reseñas de los juegos, incluyendo el indicador de recomendación.
-
-    Retorna:
-    dict: Un diccionario que contiene la siguiente información:
-          - 'Usuario': El identificador único del usuario.
-          - 'Dinero gastado': La cantidad total de dinero gastado por el usuario en juegos.
-          - '% de recomendación': El porcentaje de recomendación promedio dado por el usuario en sus reseñas.
-          - 'Cantidad de items': El número total de juegos adquiridos por el usuario.
-    """
-
-    user_id = user_id.lower()
-
-    # Filtrar df_items por el user_id dado
-    user_items = user_game_prices[user_game_prices['user_id'] == user_id]
-
-    # Verificar si se encontraron items para el user_id dado
-    if user_items.empty:
-        return f"No se encontraron items para el usuario {user_id}"
-    
-    # Obtener los item_ids para el usuario
-    item_ids = user_items['item_id'].tolist()
-    
-    # Filtrar df_reviews por los item_ids del usuario
-    user_reviews = df_reviews[df_reviews['item_id'].isin(item_ids)]
-    
-    # Calcular el porcentaje de recomendación
-    recommend_percentage = user_reviews['recommend'].mean() * 100
-    
-    # Calcular el total gastado por el usuario
-    total_spent = int(user_items['price'].sum())
-    
-    # Contar la cantidad de items del usuario
-    num_items = len(item_ids)
-    
-    # Crear el diccionario de resultados
-    result = {
-        "Usuario": user_id,
-        "Dinero gastado": f"{total_spent} USD",
-        "% de recomendación": f"{recommend_percentage:.2f}%",
-        "Cantidad de items": num_items
-    }
-    
-    return result
-
-@app.get("/user_info/{user_id}")
-async def get_user_info(user_id: str):
-    return userdata(user_id)
 
 def UserForGenre(genre, df_items=df_items, df_games=df_games):
     """
