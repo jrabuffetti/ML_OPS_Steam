@@ -5,9 +5,8 @@ import pyarrow.parquet as pq
 app = FastAPI()
 
 df_developer = pq.read_table("endpoint_developer.parquet").to_pandas()
-prices = pq.read_table("endpoint_userdata_prices.parquet").to_pandas()
-reviews = pq.read_table("endpoint_userdata_reviews.parquet").to_pandas()
-df_genre_years = pq.read_table("endpoint_userforgenre.parquet").to_pandas()
+df_genre_games = pq.read_table("datasets/Parquet/endpoint_userforgenre_games.parquet").to_pandas()
+df_genre_items = pq.read_table("datasets/Parquet/endpoint_userforgenre_items.parquet").to_pandas()
 df_merged = pq.read_table("endpoint_bestdeveloperyear.parquet").to_pandas()
 df_review_analysis = pq.read_table("endpoint_developerreviewanalysis.parquet").to_pandas()
 
@@ -94,13 +93,14 @@ def userdata(user_id, user_game_prices=prices, df_reviews=reviews):
 async def get_user_info(user_id: str):
     return userdata(user_id)
 
-def UserForGenre(genre, user_genre_years=df_genre_years):
+def UserForGenre(genre, df_items=df_items, df_games=df_games):
     """
     Esta función busca al usuario que ha acumulado más horas jugadas en un género específico y devuelve una lista de la acumulación de horas jugadas por año de lanzamiento para ese género.
 
     Parámetros:
     - genre (str): El género para el cual se quiere encontrar al usuario con más horas jugadas.
-    - user_genre_years (DataFrame): El DataFrame que contiene información sobre las horas jugadas, los géneros y los años de lanzamiento de los juegos.
+    - df_items (DataFrame): El DataFrame que contiene información sobre las horas jugadas y los IDs de los juegos.
+    - df_games (DataFrame): El DataFrame que contiene información sobre los géneros y los años de lanzamiento de los juegos.
 
     Retorna:
     - dict: Un diccionario con dos claves:
@@ -116,26 +116,43 @@ def UserForGenre(genre, user_genre_years=df_genre_years):
     # Convertir el género a minúsculas para hacer la comparación insensible a mayúsculas y minúsculas
     genre_lower = genre.lower()
     
-    # Filtrar los juegos por el género especificado
-    genre_games = user_genre_years[user_genre_years['genres'].apply(lambda x: genre_lower in [g.lower() for g in x])]
+    # Filtrar los juegos por el género especificado en df_games
+    genre_games = df_games[df_games['genres'].apply(lambda x: genre_lower in [g.lower() for g in x])]
     
-    # Verificar si no se encontraron datos de horas jugadas para el género especificado
+    # Verificar si no se encontraron datos de juegos para el género especificado en df_games
     if genre_games.empty:
-        return {"No se encontraron datos. Verifica si el dato ingresado es correcto"}
+        return {"No se encontraron datos de juegos para el género especificado."}
+    
+    # Obtener los IDs de los juegos del género especificado
+    genre_game_ids = set(genre_games['id'])
+    
+    # Filtrar los ítems por los IDs de los juegos del género especificado en df_items
+    user_genre_items = df_items[df_items['item_id'].isin(genre_game_ids)]
+    
+    # Verificar si no se encontraron datos de horas jugadas para el género especificado en df_items
+    if user_genre_items.empty:
+        return {"No se encontraron datos de horas jugadas para el género especificado."}
     
     # Agrupar por usuario y sumar las horas jugadas
-    user_hours = genre_games.groupby('user_id')['playtime_forever'].sum().reset_index()
+    user_hours = user_genre_items.groupby('user_id')['playtime_forever'].sum().reset_index()
+    
+    # Verificar si no se encontraron datos de horas jugadas para el género especificado
+    if user_hours.empty:
+        return {"No se encontraron datos de horas jugadas para el género especificado."}
     
     # Obtener el usuario con más horas jugadas para el género dado
     top_user = user_hours.loc[user_hours['playtime_forever'].idxmax()]['user_id']
     
     # Filtrar las horas jugadas por el usuario con más horas jugadas para el género dado
-    top_user_hours = genre_games[genre_games['user_id'] == top_user]
+    top_user_hours = user_genre_items[user_genre_items['user_id'] == top_user]
     
-    # Obtener la acumulación de horas jugadas por año de lanzamiento
-    year_hours = top_user_hours.groupby('release_year')['playtime_forever'].sum()
-    year_hours_list = [{'Año': year, 'Horas': hours} for year, hours in year_hours.items()]
-
+    # Obtener los años de lanzamiento de los juegos del género especificado desde df_games
+    year_hours_list = []
+    for game_id in genre_game_ids:
+        release_year = genre_games.loc[genre_games['id'] == game_id, 'release_year'].values[0]
+        game_hours = top_user_hours[top_user_hours['item_id'] == game_id]['playtime_forever'].sum()
+        year_hours_list.append({'Año': release_year, 'Horas': game_hours})
+    
     return {"Usuario con más horas jugadas para " + genre: top_user, "Horas jugadas": year_hours_list}
 
 @app.get("/user_genre_info/{genre}")
