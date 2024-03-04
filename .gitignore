@@ -1,0 +1,2 @@
+# Ignorar directorios de entornos virtuales de Python
+venv/
