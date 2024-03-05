@@ -3,13 +3,15 @@ import pandas as pd
 import pyarrow.parquet as pq
 import pyarrow as pa
 
+
 app = FastAPI()
 
-df_developer = pq.read_table("EP_developer.parquet").to_pandas()
-df_userdata = pq.read_table("EP_userdata.parquet").to_pandas()
-df_userforgenre = pq.read_table("EP_userforgenre.parquet").to_pandas()
-df_bestdeveloperyear = pq.read_table("EP_bestdeveloperyear.parquet").to_pandas()
-df_developeranalysis = pq.read_table("EP_developeranalysis.parquet").to_pandas()
+df_developer = pq.read_table("datasets/Parquet/EP_developer.parquet").to_pandas()
+df_userdata = pq.read_table("datasets/Parquet/EP_userdata.parquet").to_pandas()
+df_userforgenre = pq.read_table("datasets/Parquet/EP_userforgenre.parquet").to_pandas()
+df_bestdeveloperyear = pq.read_table("datasets/Parquet/EP_bestdeveloperyear.parquet").to_pandas()
+df_developeranalysis = pq.read_table("datasets/Parquet/EP_developeranalysis.parquet").to_pandas()
+df_recomendacion = pq.read_table("datasets/Parquet/EP_ML_recomendacion.parquet").to_pandas()
 
 
 # Define el endpoint de FastAPI
@@ -204,6 +206,26 @@ async def get_developer_reviews_analysis(developer: str):
     resultado = {developer: {'Negative': negative_count, 'Positive': positive_count}}
 
     return resultado
+
+@app.get("/recomendacion_juego/{id_juego}")
+async def get_recomendacion_juego(id_juego: int):
+    """
+    Función que devuelve las recomendaciones de juegos para un juego específico según su ID.
+
+    Parámetros:
+        id_juego (int): El ID del juego del cual se desean obtener las recomendaciones.
+
+    Retorna:
+        list: Una lista de nombres de juegos recomendados para el juego especificado por su ID.
+              Si no se encuentran recomendaciones para el ID dado, se devuelve un mensaje indicando que no se encontraron recomendaciones.
+    """
+    try:
+        # Buscar las recomendaciones para el juego especificado por su ID
+        recomendaciones = df_recomendacion[df_recomendacion['id'] == id_juego]['recomendaciones'].values[0]
+        return list(recomendaciones)
+    except IndexError:
+        # Si no se encuentra el juego en el DataFrame de recomendaciones, devolver un mensaje indicando que no se encontraron recomendaciones
+        raise HTTPException(status_code=404, detail=f"No se encontraron recomendaciones para el ID {id_juego}")
 
 if __name__ == "__main__":
     import uvicorn
