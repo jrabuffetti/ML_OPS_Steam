@@ -27,7 +27,7 @@ Proceso de ETL por dataframe:
 
 **EDA: Análisis Exploratorio de Datos**
 
-Una vez finalizado el ETL, se hizo un analisis de las tres bases de datos generando gráficos y análisis que proporcionan una comprensión rápida de las tendencias clave. Exploramos usuarios, reseñas y características del juego para un análisis completo.
+Una vez finalizado el ETL, se hizo un analisis de las tres bases de datos generando gráficos y análisis que proporcionan una comprensión rápida de las tendencias clave. Exploramos usuarios, reseñas y características del juego para un análisis completo. Pueden revisar el EDA [aquí](/EDA.ipynb)
 
 **Desarrollo de la API**
 
