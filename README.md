@@ -11,9 +11,9 @@ El proyecto MLOps es una iniciativa integral que combina las habilidades de un D
 
 ### Datos 
 El proyecto utiliza tres bases de datos distintas:
-* **[australian_user_reviews.json:](datasets\australian_user_reviews.rar)** es un dataframe que contiene los comentarios que los usuarios realizaron sobre los juegos que utilizan , recomendaciones o no de ese juego; además de datos como url y user_id.s 
-* **[australian_users_items.json:](datasets\australian_users_items.rar)** es un dataframe que contiene información sobre cada juego que utilizan los usuarios, y el tiempo que cada usuario jugo.
-* **[output_steam_games.json:](datasets\output_steam_games.rar)** es un dataframe que contiene los comentarios que los usuarios realizaron sobre los juegos que utilizan , recomendaciones o no de ese juego; además de datos como url y user_id.
+* **[australian_user_reviews.json:](datasets/australian_user_reviews.rar)** es un dataframe que contiene los comentarios que los usuarios realizaron sobre los juegos que utilizan , recomendaciones o no de ese juego; además de datos como url y user_id.s 
+* **[australian_users_items.json:](datasets/australian_users_items.rar)** es un dataframe que contiene información sobre cada juego que utilizan los usuarios, y el tiempo que cada usuario jugo.
+* **[output_steam_games.json:](datasets/output_steam_games.rar)** es un dataframe que contiene los comentarios que los usuarios realizaron sobre los juegos que utilizan , recomendaciones o no de ese juego; además de datos como url y user_id.
 
 # Proceso del proyecto
  **ETL: Extracción, transformación y Carga de datos**
