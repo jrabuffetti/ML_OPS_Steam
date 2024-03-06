@@ -20,10 +20,15 @@ async def get_developer_info(developer_name: str):
     """
     Función para obtener información sobre los juegos desarrollados por un desarrollador específico.
 
-    Args:
+    Parámetros:
         developer_name (str): El nombre del desarrollador a buscar.
 
-    Returns:
+        Ejemplos:
+            - Capcom
+            - Valve
+            - Ubisoft - San Francisco
+
+    Retorna:
         dict: Un diccionario con información sobre los juegos desarrollados por el desarrollador especificado.
     """
     # Convertir el nombre del desarrollador a minúsculas para una comparación sin distinción entre mayúsculas y minúsculas
@@ -57,10 +62,15 @@ async def get_user_data(user_id: str):
     """
     Función para obtener información sobre los juegos adquiridos por un usuario específico.
 
-    Args:
-        user_id (str): El identificador único del usuario del que se desean obtener los datos.
+    Parámetros:
+        user_id (str): El identificador único del usuario del que se desean obtener los datos. 
+        
+        Ejemplos:
+            - Sp3ctre
+            - shinomegami
+            - Terminally-Chill
 
-    Returns:
+    Retorna:
         dict: Un diccionario con información sobre los juegos adquiridos por el usuario especificado.
     """
     # Convertir el user_id a minúsculas para una comparación sin distinción entre mayúsculas y minúsculas
@@ -98,10 +108,15 @@ async def get_user_for_genre(genre: str):
     """
     Busca al usuario que ha acumulado más horas jugadas en un género específico y devuelve una lista de la acumulación de horas jugadas por año de lanzamiento para ese género.
 
-    Args:
-        genre (str): El género para el cual se quiere encontrar al usuario con más horas jugadas.
+    Parámetros:
+        genre (str): El género para el cual se quiere encontrar al usuario con más horas jugadas. 
+        
+        Ejemplos:
+            - Action
+            - Adventure
+            - Strategy
 
-    Returns:
+    Retorna:
         dict: Un diccionario con dos claves: 'Usuario con más horas jugadas para [Género]' y 'Horas jugadas'.
     """
     # Convertir el género a minúsculas para hacer la comparación insensible a mayúsculas y minúsculas
@@ -134,10 +149,18 @@ async def get_best_developer_year(year: int):
     """
     Devuelve el top 3 de desarrolladores con juegos más recomendados por usuarios para el año dado.
 
-    Args:
-        year (int): El año para el cual se quiere obtener el top 3 de desarrolladores.
+    Parámetros:
+        year (int): El año para el cual se quiere obtener el top 3 de desarrolladores. 
+        
+        Años utilizables:
+            - 2010
+            - 2011
+            - 2012
+            - 2013
+            - 2014
+            - 2015
 
-    Returns:
+    Retorna:
         list: Una lista con los tres principales desarrolladores para el año dado, en formato de diccionarios donde cada uno tiene una clave 'Puesto' seguida del número de puesto y el valor del desarrollador.
     """
     # Filtrar los juegos por el año dado y por recomendaciones positivas (recommend=True) y sentimiento positivo (sentiment_analysis=2)
@@ -167,16 +190,17 @@ async def get_developer_reviews_analysis(developer: str):
     """
     Analiza las revisiones de los usuarios para un desarrollador específico y devuelve un diccionario con la cantidad total de registros de reseñas de usuarios clasificados como positivos o negativos.
 
-    Args:
-        developer (str): El nombre del desarrollador del que se analizarán las revisiones.
+    Parámetros:
+        developer (str): El nombre del desarrollador del que se analizarán las revisiones. 
+        
+        Ejemplos:
+            - Capcom
+            - Valve
+            - Ubisoft - San Francisco
 
-    Returns:
+    Retorna:
         dict: Un diccionario con el nombre del desarrollador como clave y una lista con la cantidad total de registros de reseñas de usuarios clasificados como positivos o negativos.
 
-    Si el desarrollador especificado no existe en los datos, la función devuelve un error HTTP 404.
-
-    Ejemplo de retorno:
-    {'Valve': {'Negative': 930, 'Positive': 5410}}
     """
 
     # Convertir el nombre del desarrollador proporcionado a minúsculas para una comparación sin distinción entre mayúsculas y minúsculas
@@ -210,10 +234,15 @@ async def get_developer_reviews_analysis(developer: str):
 @app.get("/recomendacion_juego/{id_juego}")
 async def get_recomendacion_juego(id_juego: int):
     """
-    Función que devuelve las recomendaciones de juegos para un juego específico según su ID.
-
+    Función que devuelve las recomendaciones de juegos para un juego específico según su ID. 
+    
     Parámetros:
         id_juego (int): El ID del juego del cual se desean obtener las recomendaciones.
+
+        Ejemplos:
+            - 774277
+            - 643980
+            - 772540
 
     Retorna:
         list: Una lista de nombres de juegos recomendados para el juego especificado por su ID.
