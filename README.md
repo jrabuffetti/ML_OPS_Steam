@@ -69,7 +69,5 @@ Durante la ejecución de este proyecto, se aplicaron los conocimientos adquirido
 
 Hemos alcanzado con éxito el objetivo de desarrollar un Producto Mínimo Viable (MVP), que incluye una API y su despliegue en un servicio web. Se logró un buen nivel de optimización teniendo en cuenta las limitaciones de almacenamiento.
 
-**Herramientas utilizadas**
-
 ## Autor ✒️
 * **Juan Rabuffetti**  - [LinkedIn](https://www.linkedin.com/in/juan-rabuffetti/)
